@@ -7,10 +7,9 @@ const all = document.querySelector('.btn-all');
 const headphone = document.querySelector('.btn-headphone');
 const laptop = document.querySelector('.btn-laptop');
 const mobile = document.querySelector('.btn-mobile');
-const deleteProduct = document.querySelector('.delete-product');
-
+const filterButtons = document.querySelectorAll('.buttons button');
 let dataId = 0;
-const productData = [];
+let productData = [];
 let filteredData = [];
 
 const createProduct = function (e) {
@@ -23,32 +22,28 @@ const createProduct = function (e) {
     <div class="wrapper">
       <img src="${urlInput.value}" alt="" />
       </div>
-      
+      <button class="delete-button">Delete</button>
   </div>
 `;
-
     const myFragment = document.createRange().createContextualFragment(myHTML);
-    const product = myFragment.querySelector('.product');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('delete-button');
-    product.appendChild(deleteButton);
     productsDiv.appendChild(myFragment);
+
     productData.push({
       category: selectInput.value,
-      id: dataId,
+      id: dataId++,
       src: urlInput.value,
     });
-    dataId++;
-    // deleteButton.addEventListener('click', function (e) {
-    //   for (let i = 0; i < productData.length; i++) {
-    //     if (e.currentTarget.parentElement.dataset.id == productData[i].id) {
-    //       productData.splice(productData[i], 1);
-    //       e.currentTarget.parentElement.remove();
-    //     }
-    //   }
-    // });
   }
+};
+
+const deleteItem = function (e) {
+  console.log(e.target.parentElement);
+  productData.forEach((item, index) => {
+    if (e.target.parentElement.dataset.id == productData[index].id) {
+      productData.splice(index, 1);
+      e.target.parentElement.remove();
+    }
+  });
 };
 
 const renderHeadphone = function (e) {
@@ -67,14 +62,10 @@ const renderHeadphone = function (e) {
     <div class="wrapper">
       <img src="${filteredData[i].src}" alt="" />
       </div>
+      <button class="delete-button">Delete</button>
   </div>
 `;
     const myFragment = document.createRange().createContextualFragment(myHTML);
-    const product = myFragment.querySelector('.product');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('delete-button');
-    product.appendChild(deleteButton);
     productsDiv.appendChild(myFragment);
   }
 };
@@ -95,14 +86,10 @@ const renderLaptop = function (e) {
     <div class="wrapper">
       <img src="${filteredData[i].src}" alt="" />
       </div>
+      <button class="delete-button">Delete</button>
   </div>
 `;
     const myFragment = document.createRange().createContextualFragment(myHTML);
-    const product = myFragment.querySelector('.product');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('delete-button');
-    product.appendChild(deleteButton);
     productsDiv.appendChild(myFragment);
   }
 };
@@ -123,45 +110,34 @@ const renderMobile = function (e) {
     <div class="wrapper">
       <img src="${filteredData[i].src}" alt="" />
       </div>
+      <button class="delete-button">Delete</button>
   </div>
 `;
     const myFragment = document.createRange().createContextualFragment(myHTML);
-    const product = myFragment.querySelector('.product');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('delete-button');
-    product.appendChild(deleteButton);
     productsDiv.appendChild(myFragment);
   }
 };
 
 const renderAll = function (e) {
   productsDiv.innerHTML = '';
-  filteredData = [];
-  for (let i = 0; i < productData.length; i++) {
+  filteredData = productData;
+  for (let i = 0; i < filteredData.length; i++) {
     const myHTML = `
-  <div class="product" data-name="${selectInput.value}" data-id="${dataId}">
+  <div class="product" data-name="${filteredData[i].category}" data-id="${filteredData[i].id}">
     <div class="wrapper">
-      <img src="${urlInput.value}" alt="" />
+      <img src="${filteredData[i].src}" alt="" />
       </div>
+      <button class="delete-button">Delete</button>
   </div>
 `;
     const myFragment = document.createRange().createContextualFragment(myHTML);
-    const product = myFragment.querySelector('.product');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('delete-button');
-    product.appendChild(deleteButton);
     productsDiv.appendChild(myFragment);
   }
 };
 
-const removeProduct = function (e) {
-  e.currentTarget.parentElement.remove();
-};
-
 btnSubmit.addEventListener('click', createProduct);
-headphone.addEventListener('click', renderHeadphone);
 laptop.addEventListener('click', renderLaptop);
 mobile.addEventListener('click', renderMobile);
+headphone.addEventListener('click', renderHeadphone);
 all.addEventListener('click', renderAll);
+productsDiv.addEventListener('click', deleteItem);
